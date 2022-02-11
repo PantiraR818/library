@@ -9,7 +9,8 @@ const port = process.env.PORT || 4001
 
 
 const staffRoute = require("./src/routes/staffRoute");
-
+const borrowRoute = require("./src/routes/borrowRoute");
+const memberRoute = require("./src/routes/memberRoute");
 
 //จำเป็นมาก ต้องใส่
 const app = express();  
@@ -22,6 +23,8 @@ require("./db")(app);
 // =======================================
 
 app.use("/staff", staffRoute);
+app.use("/borrow", borrowRoute);
+app.use("/member", memberRoute);
 
 app.get("/",(req, res)=>{
     res.send("Hello from index");

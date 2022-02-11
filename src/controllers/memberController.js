@@ -1,22 +1,22 @@
-const Staff = require('../models/staffModel');
+const Member = require('../models/memerModel');
 
-exports.addStaff = async(req , res)=>{
+exports.addMember = async(req , res)=>{
     try {
-        let staff = new Staff({
-            staff_id:req.body.staff_id,
+        let member = new Member({
+            member_id:req.body.member_id,
             name:req.body.name,
+            group:req.body.group,
             address:req.body.address,
-            phoneNumber:req.body.phoneNumber,
-
+            phoneNumber:req.body.phoneNumber
         });
         //fields password in html hass password first
-        staff.password = await staff.hashPassword(req.body.password);
+        member.password = await member.hashPassword(req.body.password);
 
-        let createStaff = await staff.save();
+        let createMember = await member.save();
 
         res.status(200).json({
-            msg:"Add Staff OK",
-            data: createStaff
+            msg:"Add Member OK",
+            data: createMember
         });
     } catch (error) {
         
@@ -29,27 +29,27 @@ exports.addStaff = async(req , res)=>{
 
 exports.login = async (req,res) => {
     const login = {
-        staff_id: req.body.staff_id,
+        member_id: req.body.member_id,
         password: req.body.password
     }
     // console.log(login)
     try {
-        let staff = await Staff.findOne({
-            staff_id: login.staff_id
+        let member = await member.findOne({
+            member_id: login.member_id
         });
         // console.log(user);
         //check if user exit
-        if (!staff) {
+        if (!member) {
             res.status(400).json({
                 type: "Not Found",
                 msg: "Wrong Login Details"
             })
         }
 
-        let match = await staff.compareUserPassword(login.password, staff.password);
+        let match = await member.compareUserPassword(login.password, member.password);
         if (match) {
-            let token = await staff.generateJwtToken({
-                staff
+            let token = await member.generateJwtToken({
+                member
             }, "secret", {
                 expiresIn: 604800
             })
@@ -58,7 +58,7 @@ exports.login = async (req,res) => {
                 res.status(200).json({
                     success: true,
                     token: token,
-                    userCredentials: staff
+                    userCredentials: member
                 })
             }
         } else {
@@ -76,18 +76,19 @@ exports.login = async (req,res) => {
     }
 }
 
-exports.updateStaff = async (req,res)=>{
+exports.updatemember = async (req,res)=>{
     // req.params.id = id ของ staff 
     // req.body = ข้อมูล staff ที่จะ update
-    let staff = {
-        name: req.body.name,
-        address: req.body.address,
-        phoneNumber: req.body.phoneNumber
+    let member = {
+        name:req.body.name,
+        group:req.body.group,
+        address:req.body.address,
+        phoneNumber:req.body.phoneNumber,
     };
-    Staff.findByIdAndUpdate(req.params.id,staff)
+    Member.findByIdAndUpdate(req.params.id,member)
     .exec((err,data)=>{
         // findById อีกรอบเพื่อเอา data ใหม่
-        Staff.findById(req.params.id)
+        Member.findById(req.params.id)
         .exec((err,data)=>{
             data.password = "";
             res.status(200).json({
