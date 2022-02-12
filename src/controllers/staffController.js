@@ -1,4 +1,14 @@
-const Staff = require('../models/staffModel');
+const Staff = require('../models/staffModels');
+
+exports.getStaff = async (req, res) => {
+    Staff.find()      
+        .exec((err, result) => {
+            res.status(200).json({
+                msg: "OK",
+                data: result
+            });
+        });
+};
 
 exports.addStaff = async(req , res)=>{
     try {
@@ -96,4 +106,19 @@ exports.updateStaff = async (req,res)=>{
             });
         });
     });
+};
+
+exports.deletestaff = async (req, res) => {
+    Staff.findByIdAndDelete(req.params.id)      
+        .exec((err)=>{
+            if(err){
+                res.status(500).json({
+                    msg: err
+                });
+            } else{
+                res.status(200).json({
+                    msg: "Delete complete"
+                });
+            }
+        });
 };

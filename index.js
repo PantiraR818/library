@@ -9,8 +9,10 @@ const port = process.env.PORT || 4001
 
 
 const staffRoute = require("./src/routes/staffRoute");
+const bookRoute = require("./src/routes/bookRoute");
 const borrowRoute = require("./src/routes/borrowRoute");
-const memberRoute = require("./src/routes/memberRoute");
+const userRoute = require("./src/routes/userRoute");
+// const memberRoute = require("./src/routes/memberRoute");
 
 //จำเป็นมาก ต้องใส่
 const app = express();  
@@ -24,10 +26,22 @@ require("./db")(app);
 
 app.use("/staff", staffRoute);
 app.use("/borrow", borrowRoute);
-app.use("/member", memberRoute);
+// app.use("/member", memberRoute);
+app.use("/book", bookRoute);
+app.use("/user", userRoute);
 
 app.get("/",(req, res)=>{
-    res.send("Hello from index");
+    res.send("Hello from library");
+});
+
+app.get("/login",(req, res)=>{
+    res.send("Hello from login");
+});
+
+app.post("/register",(req, res)=>{
+    console.log(req.body.name);
+    console.log(req.body.email);
+    res.send("Hello from register");
 });
 
 app.listen(port,()=>{
